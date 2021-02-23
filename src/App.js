@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import AddBookmark from './AddBookmark/AddBookmark';
 import BookmarkList from './BookmarkList/BookmarkList';
+import EditBookmark from './EditBookmark/EditBookmark';
 import Nav from './Nav/Nav';
 import config from './config';
 import './App.css';
@@ -88,6 +89,12 @@ class App extends Component {
           {page === 'list' && (
             <BookmarkList
               bookmarks={bookmarks}
+            />
+          )}
+          {page === 'edit' && (
+            <EditBookmark
+              onEditBookmark={this.editBookmark}
+              onClickCancel={() => this.changePage('list')}
             />
           )}
         </div>

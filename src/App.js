@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Route } from 'react-router-dom';
 import AddBookmark from './AddBookmark/AddBookmark';
 import BookmarkList from './BookmarkList/BookmarkList';
 import EditBookmark from './EditBookmark/EditBookmark';
@@ -96,19 +97,19 @@ class App extends Component {
         <BookmarksContext.Provider value={contextValue}>
           <Nav />
           <div className='content' aria-live='polite'>
-            {page === 'add' && (
-              <AddBookmark
-                onAddBookmark={this.addBookmark}
-                onClickCancel={() => this.changePage('list')}
-              />
-            )}
-            {page === 'list' && (
-              <BookmarkList
-                bookmarks={bookmarks}
-                onEditBookmark={this.editBookmark}
-                onClickCancel={() => this.changePage('list')}
-              />
-            )}
+            <Route
+              exact
+              path='/'
+              component={BookmarkList}
+            />
+            <Route
+              path='/add-bookmark'
+              component={AddBookmark}
+            />
+            <Route
+              path='/edit/:bookmarkId'
+              component={EditBookmark}
+            />
           </div>
         </BookmarksContext.Provider>
       </main>

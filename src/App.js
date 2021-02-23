@@ -5,6 +5,7 @@ import EditBookmark from './EditBookmark/EditBookmark';
 import Nav from './Nav/Nav';
 import config from './config';
 import './App.css';
+import BookmarksContext from './BookmarksContext';
 
 const bookmarks = [
   // {
@@ -55,6 +56,15 @@ class App extends Component {
     })
   }
 
+  deleteBookmark = bookmarkId => {
+    const newBookmarks = this.state.bookmarks.filter(bm =>
+      bm.id !== bookmarkId
+    )
+    this.setState({
+      bookmarks: newBookmarks
+    })
+  }
+
   componentDidMount() {
     fetch(config.API_ENDPOINT, {
       method: 'GET',
@@ -74,30 +84,33 @@ class App extends Component {
   }
 
   render() {
-    const { page, bookmarks } = this.state
+    const contextValue = {
+      bookmarks: this.state.bookmarks,
+      addBookmark: this.addBookmark,
+      deleteBookmark: this.deleteBookmark,
+      updateBookmark: this.updateBookmark,
+    }
     return (
       <main className='App'>
         <h1>Bookmarks!</h1>
-        <Nav clickPage={this.changePage} />
-        <div className='content' aria-live='polite'>
-          {page === 'add' && (
-            <AddBookmark
-              onAddBookmark={this.addBookmark}
-              onClickCancel={() => this.changePage('list')}
-            />
-          )}
-          {page === 'list' && (
-            <BookmarkList
-              bookmarks={bookmarks}
-            />
-          )}
-          {page === 'edit' && (
-            <EditBookmark
-              onEditBookmark={this.editBookmark}
-              onClickCancel={() => this.changePage('list')}
-            />
-          )}
-        </div>
+        <BookmarksContext.Provider value={contextValue}>
+          <Nav />
+          <div className='content' aria-live='polite'>
+            {page === 'add' && (
+              <AddBookmark
+                onAddBookmark={this.addBookmark}
+                onClickCancel={() => this.changePage('list')}
+              />
+            )}
+            {page === 'list' && (
+              <BookmarkList
+                bookmarks={bookmarks}
+                onEditBookmark={this.editBookmark}
+                onClickCancel={() => this.changePage('list')}
+              />
+            )}
+          </div>
+        </BookmarksContext.Provider>
       </main>
     );
   }
